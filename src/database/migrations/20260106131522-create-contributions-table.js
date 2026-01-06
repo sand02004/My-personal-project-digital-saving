@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "users", // links to users table
+          model: "users",
           key: "id",
         },
         onDelete: "CASCADE",
@@ -51,11 +51,13 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
-    // Drop ENUM type first (important in Postgres)
+  async down(queryInterface) {
+    // Drop table first
+    await queryInterface.dropTable("contributions");
+
+    // Then drop ENUM type
     await queryInterface.sequelize.query(
       'DROP TYPE IF EXISTS "enum_contributions_status";'
     );
-    await queryInterface.dropTable("contributions");
   },
 };

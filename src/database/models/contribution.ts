@@ -39,6 +39,7 @@ export const initContributionModel = (sequelize: Sequelize) => {
       amount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
+        
       },
       status: {
         type: DataTypes.ENUM("pending", "approved", "rejected"),
