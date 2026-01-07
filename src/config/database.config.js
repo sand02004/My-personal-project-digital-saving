@@ -1,34 +1,27 @@
 require("dotenv").config();
 
-const prefixConf = () => {
-  const prefixEnv = process.env.NODE_ENV || "development";
-  let prefix;
-  switch (prefixEnv) {
-    case "development":
-      prefix = "DEV";
-      break;
-    case "testing":
-      prefix = "TEST";
-      break;
-    case "production":
-      prefix = "PROD";
-      break;
-    default:
-      prefix = "DEV";
-      break;
-  }
-  return prefix;
+const getEnv = (key, fallbackKey) => {
+  return process.env[key] || process.env[fallbackKey];
 };
 
-const prefix = prefixConf();
+const env = process.env.NODE_ENV || "development";
+
+const prefixMap = {
+  development: "DEV",
+  testing: "TEST",
+  production: "PROD",
+};
+
+const prefix = prefixMap[env];
 
 module.exports = {
-  development: {
-    username: process.env[`DB_${prefix}_USERNAME`],
-    password: process.env[`DB_${prefix}_PASSWORD`],
-    database: process.env[`DB_${prefix}_NAME`],
-    host: process.env[`DB_${prefix}_HOST`] || "localhost",
-    port: parseInt(process.env[`DB_${prefix}_PORT`], 10),
-    dialect: "postgres",
+  [env]: {
+    username: getEnv(`DB_${prefix}_USERNAME`, "DB_USERNAME"),
+    password: getEnv(`DB_${prefix}_PASSWORD`, "DB_PASSWORD"),
+    database: getEnv(`DB_${prefix}_NAME`, "DB_NAME"),
+    host: getEnv(`DB_${prefix}_HOST`, "DB_HOST") || "localhost",
+    port: Number(getEnv(`DB_${prefix}_PORT`, "DB_PORT")),
+    dialect: getEnv(`DB_${prefix}_DIALECT`, "DB_DIALECT") || "postgres",
+    logging: false,
   },
 };

@@ -1,5 +1,7 @@
 import { config as dotenv } from "dotenv";
+
 dotenv(); // Load immediately
+import mainRouter from "./routes";
 
 import express, { Express } from "express";
 import { databaseConnection } from "./config/database";
@@ -9,16 +11,17 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/v1", mainRouter);
 
 const startApp = async () => {
   try {
     await databaseConnection();
 
     app.listen(port, () => {
-      console.log(`🚀 Server running on port ${port}`);
+      console.log(`Server running on port ${port}`);
     });
   } catch (error) {
-    console.log("❌ Error starting server:", error);
+    console.log("Error starting server:", error);
     process.exit(1);
   }
 };

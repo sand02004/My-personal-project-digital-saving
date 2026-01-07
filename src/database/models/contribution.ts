@@ -1,17 +1,27 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import { Model, Optional, Sequelize, DataTypes } from "sequelize";
 
-interface ContributionAttributes {
-    id: number;
-    userId: number;
-    amount: number;
-    status: "pending" | "approved" | "rejected";
-    date: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
+export interface ContributionAttributes {
+  id: number;
+  userId: number;
+  amount: number;
+  status: "pending" | "approved" | "rejected";
+  date: Date;
+  missedCount?: number; // New: track consecutive misses
+  penalty?: number; // New: track accumulated penalties
+  isActive?: boolean; // New: inactive after 3 misses
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export class contribution
-  extends Model<ContributionAttributes>
+// Make id optional on creation
+interface ContributionCreationAttributes
+  extends Optional<
+    ContributionAttributes,
+    "id" | "missedCount" | "penalty" | "isActive"
+  > {}
+
+export class Contribution
+  extends Model<ContributionAttributes, ContributionCreationAttributes>
   implements ContributionAttributes
 {
   public id!: number;
@@ -19,36 +29,40 @@ export class contribution
   public amount!: number;
   public status!: "pending" | "approved" | "rejected";
   public date!: Date;
+  public missedCount!: number;
+  public penalty!: number;
+  public isActive!: boolean;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-}    
+}
 
 export const initContributionModel = (sequelize: Sequelize) => {
-  contribution.init(
+  Contribution.init(
     {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      amount: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        
-      },
+      id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      userId: { type: DataTypes.INTEGER, allowNull: false },
+      amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
       status: {
         type: DataTypes.ENUM("pending", "approved", "rejected"),
         defaultValue: "pending",
         allowNull: false,
       },
-      date: {
-        type: DataTypes.DATEONLY,
+      date: { type: DataTypes.DATEONLY, allowNull: false },
+      missedCount: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
+      },
+      penalty: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
     },
     {
@@ -57,5 +71,5 @@ export const initContributionModel = (sequelize: Sequelize) => {
     }
   );
 
-  return contribution;
+  return Contribution;
 };

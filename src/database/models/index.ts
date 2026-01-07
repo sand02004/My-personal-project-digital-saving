@@ -1,4 +1,13 @@
-import { Payment } from "./payment.js";
-import { GroupMember } from "./groupmembers.js";
-import { User } from "./user.js";
-import { Group } from "./groups.js";
+import { initUserModel } from "./user";
+import { initContributionModel } from "./contribution";
+
+
+export const allModel = (sequelize: any) => {
+  const UserModel = initUserModel(sequelize);
+  const ContributionModel = initContributionModel(sequelize);
+
+  return {
+    User: UserModel,
+    Contribution: ContributionModel,
+  };
+};
