@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { Group } from "./groups.js";
-import { User } from "./user.js";
+import { Group } from "./groups";
+import { User } from "./user";
 
 interface GroupMemberAttributes {
   id?: number;
@@ -58,6 +58,12 @@ export const initGroupMemberModel = (sequelize: Sequelize) => {
     {
       tableName: "group_members",
       sequelize,
+      indexes: [
+        {
+          unique: true,
+          fields: ["groupId", "userId"],
+        },
+      ],
     }
   );
 
