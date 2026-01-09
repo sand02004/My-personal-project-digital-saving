@@ -1,17 +1,7 @@
-import { config as dotenv } from "dotenv";
-
-dotenv(); // Load immediately
-import mainRouter from "./routes";
-
-import express, { Express } from "express";
+import app from './app'
 import { databaseConnection } from "./config/database";
 
-const app: Express = express();
 const port = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1", mainRouter);
 
 const startApp = async () => {
   try {
@@ -27,5 +17,3 @@ const startApp = async () => {
 };
 
 startApp();
-
-export default app;

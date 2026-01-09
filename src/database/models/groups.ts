@@ -1,4 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import { User } from "./user";
+import { GroupMember } from "./groupmembers";
 
 interface GroupAttributes {
   id?: number;

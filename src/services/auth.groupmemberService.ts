@@ -28,8 +28,8 @@ export class GroupMemberService {
       }
 
       // Create new member
-      const groupMember = await GroupMember.create(data);
-      return groupMember;
+      // const groupMember = await GroupMember.create(data);
+      // return groupMember;
     } catch (error) {
       throw error;
     }

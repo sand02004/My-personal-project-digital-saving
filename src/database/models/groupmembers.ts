@@ -1,12 +1,11 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { Group } from "./groups";
-import { User } from "./user";
+
 
 interface GroupMemberAttributes {
   id?: number;
   groupId: number;
   userId: number;
-  role?: "member" | "admin";
+  role: "member" | "admin";
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -18,7 +17,7 @@ export class GroupMember
   public id!: number;
   public groupId!: number;
   public userId!: number;
-  public role?: "member" | "admin";
+  public role!: "member" | "admin";
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -40,6 +39,7 @@ export const initGroupMemberModel = (sequelize: Sequelize) => {
           key: "id",
         },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: DataTypes.INTEGER,
@@ -49,6 +49,7 @@ export const initGroupMemberModel = (sequelize: Sequelize) => {
           key: "id",
         },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       role: {
         type: DataTypes.ENUM("member", "admin"),
@@ -66,10 +67,6 @@ export const initGroupMemberModel = (sequelize: Sequelize) => {
       ],
     }
   );
-
-  // Define associations
-  GroupMember.belongsTo(Group, { foreignKey: "groupId", as: "group" });
-  GroupMember.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   return GroupMember;
 };
